@@ -4,7 +4,7 @@ setX = function(a, b, h){
   return(seq(from = a, to = b, by = h))
 }
 
-#Находим an, bn, cn, fn
+#ГЌГ ГµГ®Г¤ГЁГ¬ an, bn, cn, fn
 calcAn = function(Ax, Bx, h){
   return(-(2 * Ax + h * Bx))
 }
@@ -21,9 +21,9 @@ calcFn = function(Fx, h){
   return(2 * h * h * Fx)
 }
 
-#Находим коэффциенты
+#РќР°С…РѕРґРёРј РєРѕСЌС„С„РёС†РёРµРЅС‚С‹
 
-#Нулевые
+#РќСѓР»РµРІС‹Рµ
 findAlpha1 = function(bn, cn){
   return(-cn[1]/bn[1])
 }
@@ -33,7 +33,7 @@ findBeta1 = function(fn, bn){
 }
 
 
-#Остальные
+#РћСЃС‚Р°Р»СЊРЅС‹Рµ
 findK = function(an, bn, cn, fn, alpha, beta, N){
   alpha = vector("double", length = N)
   beta = vector("double", length = N)
@@ -47,7 +47,7 @@ findK = function(an, bn, cn, fn, alpha, beta, N){
   return(data.frame(alpha, beta))
 }
 
-#Находим U до N включительно
+#РќР°С…РѕРґРёРј U РґРѕ N РІРєР»СЋС‡РёС‚РµР»СЊРЅРѕ
 calcU = function(an, bn, fn, alpha, beta, N){
   U = vector("double", length = N + 1);
   U[N + 1] = findUNN(an, bn, fn, alpha, beta, N)
@@ -64,7 +64,7 @@ findUNN = function(an, bn, fn, alpha, beta, N){
   return((fn[N + 1] - an[N + 1] * beta[N])/(an[N + 1] * alpha[N] + bn[N + 1]))
 }
 
-#РЕШЕНИЕ
+#Р Р•РЁР•РќРР•
 solve = function(Ax, Bx, Cx, Fx, a, b, Ua, Ub, x){
   N = length(x) - 1
   h = (b - a)/(N)
@@ -74,7 +74,7 @@ solve = function(Ax, Bx, Cx, Fx, a, b, Ua, Ub, x){
   cn = calcCn(Ax, Bx, h)
   fn = calcFn(Fx, h)
   
-  #Задание начальных и конечных значений (для корректного поиска alpha и beta)
+  #Р—Р°РґР°РЅРёРµ РЅР°С‡Р°Р»СЊРЅС‹С… Рё РєРѕРЅРµС‡РЅС‹С… Р·РЅР°С‡РµРЅРёР№ (РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїРѕРёСЃРєР° alpha Рё beta)
   an[N + 1] = 0
   bn[1] = 1
   bn[N + 1] = 1
@@ -82,28 +82,28 @@ solve = function(Ax, Bx, Cx, Fx, a, b, Ua, Ub, x){
   fn[1] = Ua
   fn[N + 1] = Ub
   
-  #Нахождение коэффициентов
+  #РќР°С…РѕР¶РґРµРЅРёРµ РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ
   tempFrame = findK(an, bn, cn, fn, alpha, beta, N)
   alpha = tempFrame[,1]
   beta = tempFrame[,2]
   
-  #Нахождение значений U
+  #РќР°С…РѕР¶РґРµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ U
   U = calcU(an, bn, fn, alpha, beta, N)
   
-  #График
+  #Р“СЂР°С„РёРє
   plot(x, U, col = "white")
   plot(x, U)
   points(-0.5, U[1], col = "forestgreen")
   points(1.5, U[N + 1], col = "red")
   
-  #Формирование датафрейма
+  #Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РґР°С‚Р°С„СЂРµР№РјР°
   alphaN = c(alpha, NaN)
   betaN = c(beta, NaN)
   resFrame = data.frame(x, alphaN, betaN, U)
   return(resFrame)
 }
 
-#Решение: последовательность икс с шагом, решение и вывод датафрейма со всеми необходимыми данными
+#Р РµС€РµРЅРёРµ: РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РёРєСЃ СЃ С€Р°РіРѕРј, СЂРµС€РµРЅРёРµ Рё РІС‹РІРѕРґ РґР°С‚Р°С„СЂРµР№РјР° СЃРѕ РІСЃРµРјРё РЅРµРѕР±С…РѕРґРёРјС‹РјРё РґР°РЅРЅС‹РјРё
 x = setX(-0.5, 1.5, 0.1)
 solution = solve(exp(1 + sin(x)), cos(x), exp(-(2*x-1)*(2*x-1)/16), 1 - abs(cos(4*x)), -0.5, 1.5, 0.7, 1.1, x)
 solution
